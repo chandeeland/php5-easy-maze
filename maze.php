@@ -1,6 +1,6 @@
 <?php
 
-class point {
+class Point {
 	public $x;
 	public $y;
 
@@ -10,34 +10,41 @@ class point {
 	}
 }
 
-class maze {
-	//const WALL  = 'X';
+class Maze {
 	const WALL  = 'X';
 	const EMPTY_PATH  = ' ';
 	const START  = 's';
 	const GOAL  = 'e';
 
-	protected $cells = array();
+	private $cells = array();
 	private $visited = array();
+	private $start = null;
+	private $goal = null;
 
-	public function __construct($size = 50) {
-		if ($size % 2 == 0) $size++;
+	public function __construct($sizex = 51, $sizey = null) {
+		if ($sizex % 2 == 0) $sizex++;
+		if ($sizey === null) {
+			$sizey = $sizex;
+		} else if ($sizey % 2 == 0) {
+			 $sizey++;
+		}
 
-		for ($i = 0; $i < $size; $i++) {
-			$this->cells[$i] = array_fill(0, $size, self::WALL);
-			$this->visited[$i] = array_fill(0, $size, false);
+		for ($i = 0; $i < $sizex; $i++) {
+			$this->cells[$i] = array_fill(0, $sizey, self::WALL);
+			$this->visited[$i] = array_fill(0, $sizey, false);
 		}
 
 		$this->gen_depth_first(1, 1);
-		$this->cells[1][1] = self::START;
-		$this->cells[$size-1][$size-2] = self::GOAL;
+
+		$this->setStart(new Point(1,0));
+		$this->setGoal(new Point(3,$sizey-2));
 	}
 
 	private function gen_depth_first($x, $y) {
 		$this->visited[$x][$y] = true;
 		$this->cells[$x][$y] = self::EMPTY_PATH;
 
-		$neighbors = $this->getNeighbors($x, $y, 2);
+		$neighbors = $this->getNeighbors(new Point($x, $y), 2);
 		shuffle($neighbors);
 		foreach ($neighbors as $direction => $n) {
 			if ($this->cells[$n->x][$n->y] === self::WALL) {
@@ -47,25 +54,23 @@ class maze {
 		}
 	}
 
-	protected function getNeighbors($x,$y,$step = 1) {
+	protected function getNeighbors(Point $p, $step = 1) {
 		$neighbors = array();
 
-		if (array_key_exists($x - $step, $this->cells)) {
-			$neighbors['n'] = new Point($x - $step, $y);
+		if (array_key_exists($p->x - $step, $this->cells)) {
+			$neighbors['n'] = new Point($p->x - $step, $p->y);
 		}
-		if (array_key_exists($x + $step, $this->cells)) {
-			$neighbors['s'] = new Point($x + $step, $y);
+		if (array_key_exists($p->x + $step, $this->cells)) {
+			$neighbors['s'] = new Point($p->x + $step, $p->y);
 		}
-		if (array_key_exists($y + $step, $this->cells[$x])) {
-			$neighbors['e'] = new Point($x, $y + $step);
+		if (array_key_exists($p->y + $step, $this->cells[$p->x])) {
+			$neighbors['e'] = new Point($p->x, $p->y + $step);
 		}
-		if (array_key_exists($y - $step, $this->cells[$x])) {
-			$neighbors['w'] = new Point($x, $y - $step);
+		if (array_key_exists($p->y - $step, $this->cells[$p->x])) {
+			$neighbors['w'] = new Point($p->x, $p->y - $step);
 		}
 		return $neighbors;
 	}
-
-
 
 	public function display() {
 		echo "\n";
@@ -76,31 +81,83 @@ class maze {
 			echo "\n";
 		}
 	}
-}
 
-class maze_solver extends maze {
+	public function setGoal(Point $goal) {
+		if ($this->goal instanceof Point) {
+			$this->cells[$this->goal->x][$this->goal->y] = self::EMPTY_PATH;
+		}
+		$this->goal = $goal;
+		$this->cells[$this->goal->x][$this->goal->y] = self::GOAL;
+	}
+
+	public function setStart(Point $start) {
+		if ($this->start instanceof Point) {
+			$this->cells[$this->start->x][$this->start->y] = self::EMPTY_PATH;
+		}
+		$this->start = $start;
+		$this->cells[$this->start->x][$this->start->y] = self::START;
+	}
+
+	public function getGoal() {
+		return $this->goal;
+	}
+
+	public function getStart() {
+		return $this->start;
+	}
+
+	public function setCell(Point $p, $value) {
+		if ($this->cells[$p->x][$p->y] == self::WALL) {
+			return self::WALL;
+		}
+		return $this->cells[$p->x][$p->y] = $value;
+	}
+
+	public function getCell(Point $p) {
+		if (array_key_exists($p->x, $this->cells) && array_key_exists($p->y, $this->cells[$p->x])) {
+			return $this->cells[$p->x][$p->y];
+		}
+		return false;
+	}
+
+	public function getCells() {
+		return (array)$this->cells;
+	}
+}		
+
+
+/**
+ * Add the solution finding function to the maze class
+ * 
+ * Kept seperate to facilitate using the parent class as a teaching tool
+ */
+class Maze_solver extends maze {
 
 	const GOOD_TRAIL = 'o';
 	const BAD_TRAIL = '.';
 
-	public function solve($x, $y) {
-		if ($this->cells[$x][$y] == self::GOAL) {
+	public function solve(Point $p = null) {
+		if ($p === null) $p = $this->getStart();
+
+		$curr = $this->getCell($p);
+
+		if ($curr == self::GOAL) {
 			return true;
 		}
 
-		if ($this->cells[$x][$y] == self::EMPTY_PATH || $this->cells[$x][$y] == self::START) {
-			$this->cells[$x][$y] = self::GOOD_TRAIL;
+		if ($curr == self::EMPTY_PATH || $curr == self::START) {
+			$this->setCell($p, self::GOOD_TRAIL);
 		
 			// uncomment this to show incremental progress
 			// $this->display();
 
-			$neighbors = $this->getNeighbors($x,$y);
+			$neighbors = $this->getNeighbors($p);
 			foreach ($neighbors as $n) {
-				if ($this->solve($n->x, $n->y)) {
+				if ($this->solve($n)) {
 					return true;
 				}
 			}
-			$this->cells[$x][$y] = self::BAD_TRAIL;
+			$this->setCell($p, self::BAD_TRAIL);
 
 			// uncomment this to show incremental back steps
 			// $this->display();
@@ -109,7 +166,8 @@ class maze_solver extends maze {
 	}
 }
 
-class HTMLmaze extends maze_solver {
+
+class HTML_maze extends maze_solver {
 	protected $CSS_CLASS = array (
 		self::WALL => 'wall-cell',
 		self::EMPTY_PATH => 'empty-cell',
@@ -144,7 +202,7 @@ class HTMLmaze extends maze_solver {
 		$this->css();
 
 		echo "\n<table>";
-		foreach ($this->cells as $row) {
+		foreach ($this->getCells() as $row) {
 			echo "\n\t<tr>";
 			foreach ($row as $cell) {
 				echo "\n\t\t<td class=\"{$this->CSS_CLASS[$cell]}\"></td>";
@@ -155,7 +213,10 @@ class HTMLmaze extends maze_solver {
 	}
 }
 
-$m = new HTMLmaze(45);
-$m->solve(1,1);
+// text output
+//$m = new maze_solver(40);
+
+$m = new HTML_maze(100);
+$m->solve();
 $m->display();
 
