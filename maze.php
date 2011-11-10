@@ -1,4 +1,31 @@
 <?php
+/**
+ * php5-easy-maze, a class to generate and solve mazes with HTML and text output
+ * 
+ * Copyright (c) 2011 david chan dchan@sigilsoftware.com
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *
+ */
+
 
 class Point {
 	public $x;
@@ -29,15 +56,22 @@ class Maze {
 			 $sizey++;
 		}
 
-		for ($i = 0; $i < $sizex; $i++) {
-			$this->cells[$i] = array_fill(0, $sizey, self::WALL);
-			$this->visited[$i] = array_fill(0, $sizey, false);
+		for ($i = 0; $i < $sizey; $i++) {
+			$this->cells[$i] = array_fill(0, $sizex, self::WALL);
+			$this->visited[$i] = array_fill(0, $sizex, false);
 		}
 
 		$this->gen_depth_first(1, 1);
+		$this->setStart($this->randomPoint());
+		$this->setGoal($this->randomPoint());
+	}
 
-		$this->setStart(new Point(1,0));
-		$this->setGoal(new Point(3,$sizey-2));
+	private function randomPoint() {
+		$p = new Point(rand(2 , count($this->cells) - 2), rand(2, count($this->cells[1]) - 2 ));
+		if ($this->cells[$p->x][$p->y] != self::EMPTY_PATH) {
+			$p = $this->randomPoint();
+		}
+		return $p;
 	}
 
 	private function gen_depth_first($x, $y) {
@@ -107,10 +141,14 @@ class Maze {
 	}
 
 	public function setCell(Point $p, $value) {
-		if ($this->cells[$p->x][$p->y] == self::WALL) {
-			return self::WALL;
+		if (
+			$this->cells[$p->x][$p->y] != self::WALL
+			&& $this->cells[$p->x][$p->y] != self::GOAL
+			&& $this->cells[$p->x][$p->y] != self::START
+		) {
+			$this->cells[$p->x][$p->y] = $value;
 		}
-		return $this->cells[$p->x][$p->y] = $value;
+		return $this->cells[$p->x][$p->y];
 	}
 
 	public function getCell(Point $p) {
@@ -149,7 +187,7 @@ class Maze_solver extends maze {
 			$this->setCell($p, self::GOOD_TRAIL);
 		
 			// uncomment this to show incremental progress
-			// $this->display();
+			//$this->display();
 
 			$neighbors = $this->getNeighbors($p);
 			foreach ($neighbors as $n) {
@@ -160,7 +198,7 @@ class Maze_solver extends maze {
 			$this->setCell($p, self::BAD_TRAIL);
 
 			// uncomment this to show incremental back steps
-			// $this->display();
+			//$this->display();
 		}
 		return false;
 	}
@@ -182,7 +220,7 @@ class HTML_maze extends maze_solver {
 		self::EMPTY_PATH => '#fff',
 		self::BAD_TRAIL => '#f0f',
 		self::GOOD_TRAIL => '#0f0',
-		self::START => 'f5f',
+		self::START => '5f5',
 		self::GOAL => '5f5',
 	);
 
@@ -191,7 +229,15 @@ class HTML_maze extends maze_solver {
 		if ($need_setup) {
 			echo "\n<style>";
 			foreach ($this->HTML_COLORS as $class => $color) {
-				echo "\n.{$this->CSS_CLASS[$class]} {background-color: {$color};width: 10px;height: 10px;}";
+				echo <<<CSS
+	.{$this->CSS_CLASS[$class]} {
+		background-color: {$color};
+		width: 10px;
+		height: 10px;
+		border: solid;
+	}
+
+CSS;
 			}
 			echo "\n</style>";
 			$need_setup = false;
@@ -216,7 +262,7 @@ class HTML_maze extends maze_solver {
 // text output
 //$m = new maze_solver(40);
 
-$m = new HTML_maze(100);
+$m = new HTML_maze(50, 50);
 $m->solve();
 $m->display();
 
