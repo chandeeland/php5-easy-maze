@@ -1,0 +1,67 @@
+php5-easy-maze, a class to generate and solve mazes with HTML and text output
+
+Copyright (c) 2011 david chan dchan@sigilsoftware.com
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+a little code toy, enjoy!
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XoXoooX    oooooX...X.........X...X.....X
+XoXoXoXXXXXoXXXoXXX.X.X.XXX.XXX.X.X.XXX.X
+XoooXoooooooX XoooX...X.X...X...X...X.X.X
+XXXXXXXXXXXXX XXXoXXXXX.X.XXX.XXXXXXX.X.X
+X   X           XoooooX.X...X...X.....X.X
+X XXX X XXX XXXXXXXXXoX.XXXXXXX.X.X.X.X.X
+X   X X X X X       XoX...X...X.X.X.X.X.X
+X X X X X X X XXX X XoX.X.X.X.X.XXX.XXX.X
+X X   X X   X   X X XoX.X...X.......XoooX
+X XXXXX XXXXXXX X XXXoXXXXXXXXXXXXXXXoXoX
+X     X X       X   XoooooXoooXoooooooXoX
+X XXXXX X XXXXXXX X XXXXXoXoXoXoXXXXXXXoX
+X X   X     X   X X     XoXoXoooXoooXoooX
+XXX X XXXXXXX X XXXXXXX XoXoXXXXXoXoXoXXX
+X   X X     X X       X XoooX   XoXoXoooX
+X XXX X XXX X XXXXXXX X XXXXX X XoXoXXXoX
+X X X   X X X   X     X     X X XoXoooooX
+X X XXXXX X XXX XXXXX X XXX X X XoXXXXXXX
+X X       X   X     X   X     X XoX.....X
+X XXX X XXXXX XXXXX XXXXX XXXXXXXoXXX.X.X
+X   X X     X       X     XoooooooX...X.X
+X X X XXXXX XXXXXXXXX XXXXXoXXXXXXX.XXXXX
+X X X     X         X X XoooX...........X
+X X XXXXXXXXXXX XXXXX X XoXXXXXXXXX.XXX.X
+X X X         X     X X XoXoooooooX.X...X
+XXX X XXXXXXX XXX X X X XoXoXXXXXoXXX.XXX
+X   X X     X   X X   X XoXoX   XoooX...X
+X XXX X XXX XXX X XXXXX XoXoX X XXXoX.X.X
+X   X   X X   X X       XoooX X X XoX.X.X
+X X XXXXX XXX X XXXXXXXXXXXXX X X XoXXX.X
+X X   X     X X     X     X   X   XoooooX
+X X X X XXXXX XXXXX X X X X XXXXX XXXXXoX
+X X X   X   X X   X   X X   X   X     XoX
+X X XXX X X X XXX XXXXX XXXXX X XXXXX XoX
+X X   X X X X   X   X X X     X   X   XoX
+X XXX XXX X XXX X X X X X XXXXX X X XXXoX
+X   X X   X   X   X   X X X   X X     XoX
+XXX X X XXX XXXXXXXXX X XXX X XXXXXXXXXoX
+X   X     X           X     X          oX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXeX
+
