@@ -234,7 +234,6 @@ class HTML_maze extends maze_solver {
 		background-color: {$color};
 		width: 10px;
 		height: 10px;
-		border: solid;
 	}
 
 CSS;
@@ -247,7 +246,7 @@ CSS;
 	public function display() {
 		$this->css();
 
-		echo "\n<table>";
+		echo "\n<table cellpadding=\"0\" cellspacing=\"0\">";
 		foreach ($this->getCells() as $row) {
 			echo "\n\t<tr>";
 			foreach ($row as $cell) {
@@ -262,7 +261,7 @@ CSS;
 // text output
 //$m = new maze_solver(40);
 
-$m = new HTML_maze(50, 50);
+$m = new HTML_maze(100, 70);
 $m->solve();
 $m->display();
 
