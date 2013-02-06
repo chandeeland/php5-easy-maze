@@ -62,8 +62,8 @@ class Maze {
 		}
 
 		$this->gen_depth_first(1, 1);
-		$this->setStart($this->randomPoint());
-		$this->setGoal($this->randomPoint());
+		$this->setStart($this->randomEdgePoint());
+		$this->setGoal($this->randomEdgePoint());
 	}
 
 	private function randomPoint() {
@@ -73,6 +73,34 @@ class Maze {
 		}
 		return $p;
 	}
+
+	private function randomEdgePoint() {
+        switch(rand(0,3)) {
+            case 0:
+                // left
+                $p = new Point(2, rand(1, count($this->cells[1]) - 2 ));
+                break;
+            case 1:
+                // right
+                $p = new Point(count($this->cells) - 2, rand(1, count($this->cells[1]) - 2 ));
+                break;
+            case 2:
+                // top
+                $p = new Point(rand(2, count($this->cells) - 2 ), 0);
+                break;
+            case 3:
+                // bottom
+                $p = new Point(rand(2, count($this->cells) - 2 ), count($this->cells[1]) - 2 );
+                break;
+        }
+		if ($this->cells[$p->x][$p->y] != self::EMPTY_PATH) {
+			$p = $this->randomEdgePoint();
+		}
+		return $p;
+
+	}
+
+
 
 	private function gen_depth_first($x, $y) {
 		$this->visited[$x][$y] = true;
@@ -220,8 +248,8 @@ class HTML_maze extends maze_solver {
 		self::EMPTY_PATH => '#fff',
 		self::BAD_TRAIL => '#f0f',
 		self::GOOD_TRAIL => '#0f0',
-		self::START => '5f5',
-		self::GOAL => '5f5',
+		self::START => '00f',
+		self::GOAL => '00f',
 	);
 
 	protected function css() {
